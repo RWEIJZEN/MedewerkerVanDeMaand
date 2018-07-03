@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_2_edit_picture_save_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTintMode="src_atop"
+    android:drawingCacheQuality="high"
+    android:background="#FFFFFF"
+    android:foregroundTintMode="screen"
+    android:focusableInTouchMode="true">
+
+    <ImageButton
+        android:id="@+id/imageButtonSaveCompoundPicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/button_save_compount_picture"
+        android:onClick="ButtonClick"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextFileName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/button_save_compound_picture" />
+
+    <TextView
+        android:id="@+id/textViewFilename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/label_filename"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/label_filename" />
+
+    <EditText
+        android:id="@+id/editTextFileName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:allowUndo="true"
+        android:contentDescription="@string/label_filename"
+        android:ems="10"
+        android:enabled="true"
+        android:hint="@string/hint_filename"
+        android:inputType="textUri"
+        android:maxLength="64"
+        android:scrollbars="none"
+        android:singleLine="true"
+        android:soundEffectsEnabled="true"
+        app:layout_constraintEnd_toStartOf="@+id/textView7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFilename" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:allowUndo="true"
+        android:autoText="false"
+        android:clickable="false"
+        android:cursorVisible="true"
+        android:text="@string/label_filetype"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextFileName"
+        app:layout_constraintEnd_toStartOf="@+id/imageButtonSaveCompoundPicture"
+        app:layout_constraintTop_toTopOf="@+id/editTextFileName" />
+</android.support.constraint.ConstraintLayout>
