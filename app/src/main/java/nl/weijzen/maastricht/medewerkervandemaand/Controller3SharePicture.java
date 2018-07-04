@@ -51,7 +51,10 @@ public class Controller3SharePicture extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
             case R.id.menuitem_select_eotm:
-                startActivityForResult(getAvailableFileSelectors(), 200);
+                Intent picIntent = new Intent(Intent.ACTION_GET_CONTENT,null);
+                picIntent.setType("image/*");
+                picIntent.putExtra("return_data",true);
+                startActivityForResult(picIntent,1);
                 return true;
             case R.id.menuitem_share_eotm:
                 MenuItem menuItemShare = menu.findItem(R.id.menuitem_share_eotm);
@@ -85,73 +88,10 @@ public class Controller3SharePicture extends AppCompatActivity {
         }
     }
 
-    // onOptionsItemSelected -----------------------------------------------------------------------
-    private Intent getAvailableFileSelectors(){
-        List<Intent> allIntents = getIntentsToChoose();
-        allIntents = removefallbackIntentFromAllIntentsList(allIntents);
-        Intent mainIntent = extractMainIntentFromAllIntentsList(allIntents);
-        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
-        return chooserIntent;
-    }
-
-    // getAvailableFileSelectors (onOptionsItemSelected) -------------------------------------------
-    private List<Intent> getIntentsToChoose() {
-        List<Intent> allIntents = addAllGalleryIntentsToAllIntentsList();
-        return allIntents;
-    }
-
-    // getIntentsToChoose (onOptionsItemSelected/getAvailableFileSelectors) ------------------------
-    private List<Intent> addAllGalleryIntentsToAllIntentsList() {
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        PackageManager packageManager = getPackageManager();
-        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
-        List<Intent> allIntents = new ArrayList<>();
-        for (ResolveInfo res : listGallery) {
-            Intent intent = buildIntent(galleryIntent, res);
-            allIntents.add(intent);
-        }
-        return allIntents;
-    }
-
-    // addAllGalleryIntentsToAllIntentsList (onOptionsItemSelected/getAvailableFileSelectors/getIntentsToChoose) -----
-    private Intent buildIntent(Intent targetIntent, ResolveInfo resolveInfo) {
-        Intent intent = new Intent(targetIntent);
-        intent.setComponent(new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name));
-        intent.setPackage(resolveInfo.activityInfo.packageName);
-        return intent;
-    }
-
-    // getAvailableFileSelectors (onOptionsItemSelected) -------------------------------------------
-    private List<Intent> removefallbackIntentFromAllIntentsList(List<Intent> allIntents) {
-        Intent fallbackIntent = null;
-        for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.android.fallback.Fallback")) {
-                fallbackIntent = intent;
-            }
-        }
-        allIntents.remove(fallbackIntent);
-        return allIntents;
-    }
-
-    // getAvailableFileSelectors (onOptionsItemSelected) -------------------------------------------
-    private Intent extractMainIntentFromAllIntentsList(List<Intent> allIntents) {
-        Intent mainIntent = allIntents.get(allIntents.size() - 1);
-        for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
-                mainIntent = intent;
-            }
-        }
-        allIntents.remove(mainIntent);
-        return mainIntent;
-    }
-
     // onCreateOptionsMenu -------------------------------------------------------------------------
     private void setMenuName(int recourceId){
         setTitle(getResourceString(recourceId));
     }
-
 
     // setMenuName (onCreateOptionsMenu) -----------------------------------------------------------
     private String getResourceString(int RecourceId) {
