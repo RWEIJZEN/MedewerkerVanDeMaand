@@ -1,7 +1,7 @@
 package nl.weijzen.maastricht.medewerkervandemaand;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,14 +12,12 @@ import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -31,11 +29,11 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Controller2EditPicture extends AppCompatActivity  implements View.OnTouchListener {
@@ -45,21 +43,18 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     private EditText editTextFilename;
     private ConstraintLayout layoutMenuGadgetSelection;
     private ConstraintLayout layoutMenuSaveDialog;
-    private Bitmap bmap;
-    private Menu menu;
     private MenuItem menuItemShare;
     // these matrices will be used to move and zoom image
     private Matrix matrix = new Matrix();
-    private Matrix savedMatrix = new Matrix();
+    private final Matrix savedMatrix = new Matrix();
     private Matrix scaleMatrix = new Matrix();
     private int currentLayer = 0;
     private int mode = NONE;
     // remember some things for zooming
-    private PointF start = new PointF();
-    private PointF mid = new PointF();
+    private final PointF start = new PointF();
+    private final PointF mid = new PointF();
     private float oldDist = 1f;
     private float d = 0f;
-    private float newRot = 0f;
     private float[] lastEvent = null;
     // we can be in one of these 3 states
     private static final int NONE = 0;
@@ -69,6 +64,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     private CompoundPicture compoundPicture;
 
     // Overrides for state changes
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,12 +77,11 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         editTextFilename      = findViewById(R.id.editTextFileName);
 
         CurrentYearAndMonth currentYearAndMonth = new CurrentYearAndMonth(this);
-        String filename = getString(R.string.filenam_default) + "_" + currentYearAndMonth.getYear() + "_" + String.format("%02d",currentYearAndMonth.getMonth());
+        @SuppressLint("DefaultLocale") String filename = getString(R.string.filename_default) + "_" + currentYearAndMonth.getYear() + "_" + String.format("%02d",currentYearAndMonth.getMonth());
         editTextFilename.setText(filename);
 
         Point displayDimensions = getDisplayDimensions();
         int canvasWidth = displayDimensions.x;
-        int canvasHeigth = displayDimensions.y;
 
         imageViewMovingGadget.setOnTouchListener(this);
 
@@ -118,11 +113,11 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         return displayDimensions;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View view, MotionEvent event) {
         // handle touch events here
         this.view = (ImageView) view;
-        int selectedButtonId = this.view.getId();
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 savedMatrix.set(matrix);
@@ -163,7 +158,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
                         matrix.postScale(scale, scale, mid.x, mid.y);
                     }
                     if (lastEvent != null && event.getPointerCount() == 2 || event.getPointerCount() == 3) {
-                        newRot = rotation(event);
+                        float newRot = rotation(event);
                         float r = newRot - d;
                         float[] values = new float[9];
                         matrix.getValues(values);
@@ -180,7 +175,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
 
         imageViewMovingGadget.setImageMatrix(matrix);
 
-        bmap= Bitmap.createBitmap(imageViewMovingGadget.getWidth(), imageViewMovingGadget.getHeight(), Bitmap.Config.RGB_565);
+        Bitmap bmap = Bitmap.createBitmap(imageViewMovingGadget.getWidth(), imageViewMovingGadget.getHeight(), Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bmap);
         imageViewMovingGadget.draw(canvas);
 
@@ -206,12 +201,6 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         point.set(x / 2, y / 2);
     }
 
-    /**
-     * Calculate the degree to be rotated by.
-     *
-     * @param event
-     * @return Degrees
-     */
     private float rotation(MotionEvent event) {
         double delta_x = (event.getX(0) - event.getX(1));
         double delta_y = (event.getY(0) - event.getY(1));
@@ -222,16 +211,14 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     // ActionBar menu overrides
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        setMenuName(R.string.menu_title_view_1_select_picture);
+        setMenuName();
         getMenuInflater().inflate(R.menu.menu_view_2_edit_picture, menu);
-        this.menu = menu;
         menuItemShare = menu.findItem(R.id.menuitem_share_compound_picture);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu (Menu menu){
-        this.menu = menu;
         return true;
     }
 
@@ -259,17 +246,12 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         }
     }
 
-    /**
-     * @param view
-     */
     public void ButtonClick(View view){
         this.view = (ImageView) view;
-        Context context = getApplicationContext();
 
         int selectedButtonId = this.view.getId();
         switch (selectedButtonId){
             case R.id.imageButtonSaveCompoundPicture:
-                    Resources resource = getResources();
                     String filename = editTextFilename.getText().toString();
                     if (validFilename(filename)) {
                         saveCompoundPicture(filename);
@@ -336,7 +318,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
                     Bitmap newCompoundPictureBitmap = compoundPicture.getCompoundPictureBitmap();
                     imageView2EditPicture.setImageBitmap(newCompoundPictureBitmap);
                     ++currentLayer;
-                    displayToastMessage(R.string.toast_gadget_moved_up, compoundPicture.getGadgets().get(currentLayer).getName());
+                    displayToastMessage(compoundPicture.getGadgets().get(currentLayer).getName());
                 } else {
                     displayToastMessage(R.string.toast_gadget_failed_to_move);
                 }
@@ -379,7 +361,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     // ButtonClick ---------------------------------------------------------------------------------
     private void hideSoftwareKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Service.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(editTextFilename.getWindowToken(),0);
+        Objects.requireNonNull(inputMethodManager).hideSoftInputFromWindow(editTextFilename.getWindowToken(),0);
     }
 
     // ButtonClick ---------------------------------------------------------------------------------
@@ -387,8 +369,8 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         String toastMessage = getResourceString(resourceStringToastText);
         Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
     }
-    private void displayToastMessage(int resourceStringToastText, String gadgetName) {
-        String toastMessage = String.format(getResourceString(resourceStringToastText),gadgetName);
+    private void displayToastMessage(String gadgetName) {
+        String toastMessage = String.format(getResourceString(R.string.toast_gadget_moved_up),gadgetName);
         Toast.makeText(getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
     }
 
@@ -448,8 +430,8 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     }
 
     // onCreateOptionsMenu -------------------------------------------------------------------------
-    private void setMenuName(int recourceId){
-        setTitle(getResourceString(recourceId));
+    private void setMenuName(){
+        setTitle(getResourceString(R.string.menu_title_view_2_edit_picture));
     }
 
     // onCreateOptionsMenu -------------------------------------------------------------------------
@@ -488,25 +470,23 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     // setMenuName (onCreateOptionsMenu) -----------------------------------------------------------
     private String getResourceString(int RecourceId) {
         Resources resources = getResources();
-        String result = resources.getString(RecourceId);
-        return result;
+        return resources.getString(RecourceId);
     }
     // ButtonClick ---------------------------------------------------------------------------------
-    private Uri saveCompoundPicture(String filename) {
+    private void saveCompoundPicture(String filename) {
         ImageView imageView = findViewById(R.id.imageView2EditPicture);
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         String absoluteFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Camera" + File.separator + filename + ".jpg";
-//        String absoluteFilePath = File.separator + "storage" + File.separator + "emulated" + File.separator + "0" + File.separator + "DCIM" + File.separator + "Camera" + File.separator + filename + ".jpg";
         compoundPicture.setCompoundPictureUri(SaveCapturedImageToInternalStorage(absoluteFilePath, bitmap));
-        return null;
     }
 
     // ButtonClick ---------------------------------------------------------------------------------
     private boolean validFilename(String filename){
-        return Pattern.matches("[\\w\\s\\.]+", filename);
+        return Pattern.matches("[\\w\\s.]+", filename);
     }
 
     // saveCompoundPicture (ButtonClick) -----------------------------------------------------------
+    @SuppressLint({"SetWorldReadable", "SetWorldWritable"})
     private Uri SaveCapturedImageToInternalStorage(String absoluteFilePath, Bitmap bitmap) {
         File outputFile = null;
         if (absoluteFilePath != null && bitmap != null) {
@@ -514,12 +494,9 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
             outputFile = new File(absoluteFilePath);
-            outputFile.setReadable(true, false);
-            outputFile.setWritable(true, false);
 
             FileOutputStream fileOutputStream = null;
             try {
-                outputFile.createNewFile();
                 fileOutputStream = new FileOutputStream(outputFile);
                 fileOutputStream.write(bytes.toByteArray());
                 Toast.makeText(getApplicationContext(),"Saved: " + absoluteFilePath, Toast.LENGTH_LONG).show();
@@ -527,14 +504,13 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
                 e.printStackTrace();
             } finally {
                 try {
-                    fileOutputStream.close();
+                    Objects.requireNonNull(fileOutputStream).close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-//        Uri outputFileUri = useContentProviderToProvideUri(outputFile);
-        Uri outputFileUri = Uri.fromFile(outputFile);
+        Uri outputFileUri = useContentProviderToProvideUri(outputFile);
         scanFileToMakeItAppearOnTheGallery(outputFileUri);
         return outputFileUri;
     }
@@ -553,17 +529,9 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     // SaveCapturedImageToInternalStorage (ButtonClick/saveCompoundPicture) ------------------------
     private void scanFileToMakeItAppearOnTheGallery(Uri outputFileUri) {
         String absoluteFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath() + File.separator + "Camera";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Intent mediaScanIntent = new Intent(
-                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            mediaScanIntent.setData(outputFileUri);
-            this.sendBroadcast(mediaScanIntent);
-        } else {
-            sendBroadcast(new Intent(
-                    Intent.ACTION_MEDIA_MOUNTED,
-                    Uri.parse("file://"
-                            + absoluteFilePath)));
-        }
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        mediaScanIntent.setData(outputFileUri);
+        this.sendBroadcast(mediaScanIntent);
         MediaScannerConnection.scanFile(Controller2EditPicture.this,
             new String[]{absoluteFilePath}, null,
             new MediaScannerConnection.OnScanCompletedListener() {
@@ -575,7 +543,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
 
     // commitChangesToCurrentLayer -----------------------------------------------------------------
     private class CreateMatrixCloneOMovingGadgetMatrixForCompoundGadget {
-        public Matrix invoke() {
+        Matrix invoke() {
             return new Matrix(imageViewMovingGadget.getImageMatrix());
         }
     }

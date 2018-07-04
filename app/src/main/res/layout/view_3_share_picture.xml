@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/view_share_picture"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Controller3SharePicture">
@@ -11,7 +10,7 @@
         android:id="@+id/imageView3SharePicture"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription="@string/content_description_imageview3sharepicture"
+        android:contentDescription="@string/content_description_imageview_3_share_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

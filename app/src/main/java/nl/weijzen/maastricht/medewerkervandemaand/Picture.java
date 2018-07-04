@@ -3,32 +3,26 @@ package nl.weijzen.maastricht.medewerkervandemaand;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
+import android.support.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 
 import java.io.IOException;
 
 public class Picture {
-    private Uri pictureUri;
-    private Bitmap bitmap;
+    private final Uri pictureUri;
+    private final Bitmap bitmap;
 
     // Constructor 1
-    public Picture(Context context, Uri pictureUri) {
+    Picture(Context context, Uri pictureUri) {
         this.pictureUri = pictureUri;
         this.bitmap = loadBitmapFromUri(context);
     }
 
     // Constructor 2
-    public Picture(Context context, String pictureUriText) {
+    Picture(Context context, String pictureUriText) {
         this.pictureUri = Uri.parse(pictureUriText);
         this.bitmap = loadBitmapFromUri(context);
-    }
-
-    // Constructor 2
-    public Picture(Context context, Bitmap photo) {
-        this.pictureUri = null;
-        this.bitmap = photo;
     }
 
     // Constructor 1 - Picture ---------------------------------------------------------------------
@@ -78,21 +72,5 @@ public class Picture {
         Bitmap rotatedImg = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         bitmap.recycle();
         return rotatedImg;
-    }
-
-    // loadBitmapFromUri (Constructor 1) -----------------------------------------------------------
-    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 0) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

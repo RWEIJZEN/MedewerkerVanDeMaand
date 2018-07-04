@@ -1,5 +1,6 @@
 package nl.weijzen.maastricht.medewerkervandemaand;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -23,14 +24,14 @@ import android.widget.ImageView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class Controller1SelectPicture extends AppCompatActivity {
-    private ArrayList<String> permissionsToRequest;
-    private ArrayList<String> permissions = new ArrayList<>();
+    private final ArrayList<String> permissions = new ArrayList<>();
     private Menu menu;
     private Picture picture;
 
@@ -60,14 +61,14 @@ public class Controller1SelectPicture extends AppCompatActivity {
         String pictureUriText = bundle.getString("PICTURE_URI_TEXT");
         if (pictureUriText != null) {
             picture = new Picture(this, pictureUriText);
-            showPictureInImageView(R.id.imageViewSelectedPicture);
+            showPictureInImageView();
         }
     }
 
     // ActionBar menu overrides
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        setMenuName(R.string.menu_title_view_1_select_picture);
+        setMenuName();
         getMenuInflater().inflate(R.menu.menu_view_1_select_picture, menu);
         this.menu = menu;
         return true;
@@ -77,14 +78,13 @@ public class Controller1SelectPicture extends AppCompatActivity {
     public boolean onPrepareOptionsMenu (Menu menu){
         this.menu = menu;
         if(picture != null){
-            DisplayMenuButton(R.id.menu_button_edit);
+            DisplayMenuButton();
         }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        Intent intent = new Intent();
         switch(item.getItemId()){
             case R.id.menu_button_camera:
                 startActivityForResult(getAvailableFileSelectors(item.getItemId()), 200);
@@ -106,12 +106,11 @@ public class Controller1SelectPicture extends AppCompatActivity {
             Uri picUri = getPickImageResultUri(data);
             if (picUri != null) {
                 picture = new Picture(this, picUri);
-                showPictureInImageView(R.id.imageViewSelectedPicture);
-                DisplayMenuButton(R.id.menu_button_edit);
+                showPictureInImageView();
+                DisplayMenuButton();
             } else {
-                Resources resource = getResources();
-                Bitmap noInput = ((BitmapDrawable) getDrawable(R.drawable.ic_launcher_background)).getBitmap();
-                showPictureInImageView(R.id.imageViewSelectedPicture, noInput);
+                Bitmap noInput = ((BitmapDrawable) Objects.requireNonNull(getDrawable(R.drawable.ic_launcher_background))).getBitmap();
+                showPictureInImageView(noInput);
             }
         }
     }
@@ -122,7 +121,7 @@ public class Controller1SelectPicture extends AppCompatActivity {
         permissions.add(CAMERA);
         permissions.add(READ_EXTERNAL_STORAGE);
         permissions.add(WRITE_EXTERNAL_STORAGE);
-        permissionsToRequest = findUnAskedPermissions(permissions);
+        ArrayList<String> permissionsToRequest = findUnAskedPermissions(permissions);
         if (checkSdkTargetApiVersionIsAtleasetMarshmallow()) {
             if (permissionsToRequest.size() > 0) {
                 requestPermissions(permissionsToRequest.toArray(
@@ -146,10 +145,7 @@ public class Controller1SelectPicture extends AppCompatActivity {
     // findUnAskedPermissions (onCreate/RequestPermissionsForCamera) -------------------------------
     @TargetApi(Build.VERSION_CODES.M)
     private boolean hasPermission(String permission) {
-        if (checkSdkTargetApiVersionIsAtleasetMarshmallow()) {
-            return (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
-        }
-        return true;
+        return !checkSdkTargetApiVersionIsAtleasetMarshmallow() || (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
     }
 
     // hasPermission (onCreate/RequestPermissionsForCamera/findUnAskedPermissions) -----------------
@@ -159,19 +155,12 @@ public class Controller1SelectPicture extends AppCompatActivity {
 
 
     // onCreateOptionsMenu -------------------------------------------------------------------------
-    private void setMenuName(int recourceId){
-        setTitle(getResourceString(recourceId));
-    }
-
-    // setMenuName (onCreateOptionsMenu) -----------------------------------------------------------
-    private String getResourceString(int RecourceId) {
-        Resources resources = getResources();
-        String result = resources.getString(RecourceId);
-        return result;
+    private void setMenuName(){
+        setTitle(getResources().getString(R.string.menu_title_view_1_select_picture));
     }
 
     // onPrepareOptionsMenu ------------------------------------------------------------------------
-    private void DisplayMenuButton(int menuButtonId) {
+    private void DisplayMenuButton() {
         MenuItem menuButtonUsePicture = menu.findItem(R.id.menu_button_edit);
         menuButtonUsePicture.setVisible(true);
     }
@@ -232,7 +221,7 @@ public class Controller1SelectPicture extends AppCompatActivity {
     private List<Intent> removefallbackIntentFromAllIntentsList(List<Intent> allIntents) {
         Intent fallbackIntent = null;
         for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.android.fallback.Fallback")) {
+            if (Objects.requireNonNull(intent.getComponent()).getClassName().equals("com.android.fallback.Fallback")) {
                 fallbackIntent = intent;
             }
         }
@@ -244,7 +233,7 @@ public class Controller1SelectPicture extends AppCompatActivity {
     private Intent extractMainIntentFromAllIntentsList(List<Intent> allIntents) {
         Intent mainIntent = allIntents.get(allIntents.size() - 1);
         for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
+            if (Objects.requireNonNull(intent.getComponent()).getClassName().equals("com.android.documentsui.DocumentsActivity")) {
                 mainIntent = intent;
             }
         }
@@ -285,32 +274,30 @@ public class Controller1SelectPicture extends AppCompatActivity {
         String cacheFilename = resource.getString(R.string.filename_cache);
 
         File internalStoragePath = getExternalCacheDir();
-        Uri outputFileUri = SaveCapturedImageToInternalStorage(cacheFilename, internalStoragePath);
-        return outputFileUri;
+        return SaveCapturedImageToInternalStorage(cacheFilename, internalStoragePath);
     }
 
     // getCaptureImageOutputUri (onActivityResult/getPickImageResultUri) ---------------------------
+    @SuppressLint({"SetWorldReadable", "SetWorldWritable"})
     private Uri SaveCapturedImageToInternalStorage(String fileName, File internalStoragePath) {
         Uri outputFileUri = null;
         if (internalStoragePath != null) {
             outputFileUri = FileProvider.getUriForFile(Controller1SelectPicture.this,
                     BuildConfig.APPLICATION_ID + ".provider",
                     new File(internalStoragePath.getPath(), fileName));
-            internalStoragePath.setReadable(true,false);
-            internalStoragePath.setWritable(true,false);
         }
         return outputFileUri;
     }
 
     // onActivityResult ----------------------------------------------------------------------------
-    private void showPictureInImageView(int imageViewId) {
-        ImageView imageViewSelectPicture = findViewById(imageViewId);
+    private void showPictureInImageView() {
+        ImageView imageViewSelectPicture = findViewById(R.id.imageViewSelectedPicture);
         imageViewSelectPicture.setImageBitmap(picture.getBitmap());
     }
 
     // onActivityResult ----------------------------------------------------------------------------
-    private void showPictureInImageView(int imageViewId, Bitmap bitMap) {
-        ImageView imageViewSelectPicture = findViewById(imageViewId);
-        imageViewSelectPicture.setImageBitmap(picture.getBitmap());
+    private void showPictureInImageView(Bitmap bitMap) {
+        ImageView imageViewSelectPicture = findViewById(R.id.imageViewSelectedPicture);
+        imageViewSelectPicture.setImageBitmap(bitMap);
     }
 }

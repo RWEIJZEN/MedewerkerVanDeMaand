@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/view_2_edit_picture_gadget_menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -70,7 +68,7 @@
         android:id="@+id/imageButtonLayerToTop"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_imagebutton_layer_up"
         android:onClick="ButtonClick"
         app:layout_constraintEnd_toStartOf="@+id/imageButtonHideMenu"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
@@ -80,7 +78,7 @@
         android:id="@+id/imageButtonGadgetPrevious"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_imagebutton_gadget_previous"
         android:onClick="ButtonClick"
         android:rotation="270"
         app:layout_constraintBottom_toBottomOf="@+id/imageButtonLayerToBottom"
@@ -93,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_imagebutton_gadget_next"
         android:onClick="ButtonClick"
         android:rotation="270"
         app:layout_constraintBottom_toBottomOf="@+id/imageButtonGadgetPrevious"
@@ -106,7 +104,7 @@
         android:id="@+id/imageButtonHideMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_imagebutton_hide_menu"
         android:onClick="ButtonClick"
         app:layout_constraintBottom_toBottomOf="@+id/imageButtonLayerToBottom"
         app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +117,7 @@
         android:id="@+id/imageButtonLayerToBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/content_description_imagebutton_layer_down"
         android:onClick="ButtonClick"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonLayerToTop"
         app:layout_constraintStart_toStartOf="@+id/imageButtonLayerToTop"
@@ -130,7 +128,7 @@
         android:id="@+id/imageButtonDeleteGadget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Button delete gadget"
+        android:contentDescription="@string/content_description_imagebutton_delete_gadget"
         android:onClick="ButtonClick"
         app:layout_constraintStart_toEndOf="@+id/imageButtonButterflies"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -140,6 +138,7 @@
         android:id="@+id/imageButtonSubmitChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/menu_item_submit_change"
         android:onClick="ButtonClick"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonDeleteGadget"
         app:layout_constraintTop_toBottomOf="@+id/imageButtonDeleteGadget"
@@ -158,12 +157,10 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:text="@string/label_action"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonDeleteGadget"
         app:layout_constraintStart_toStartOf="@+id/imageButtonDeleteGadget"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
     <TextView
         android:id="@+id/textView3"
@@ -172,7 +169,7 @@
         android:text="@string/label_gadget"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonGadgetNext"
         app:layout_constraintStart_toStartOf="@+id/imageButtonGadgetPrevious"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/textView4"
@@ -181,17 +178,14 @@
         android:text="@string/label_layer"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonLayerToBottom"
         app:layout_constraintStart_toStartOf="@+id/imageButtonLayerToBottom"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView3" />
 
     <TextView
-        android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:text="@string/label_menu"
         app:layout_constraintEnd_toEndOf="@+id/imageButtonHideMenu"
         app:layout_constraintStart_toStartOf="@+id/imageButtonHideMenu"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintTop_toTopOf="@+id/textView4" />
 
 </android.support.constraint.ConstraintLayout>

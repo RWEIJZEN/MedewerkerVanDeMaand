@@ -5,13 +5,13 @@ import android.content.res.Resources;
 
 import java.util.Calendar;
 
-public class CurrentYearAndMonth {
-    private Context context;
-    private Integer year;
-    private Integer month;
+class CurrentYearAndMonth {
+    private final Context context;
+    private final Integer year;
+    private final Integer month;
 
     // Constructors
-    public CurrentYearAndMonth(Context context){
+    CurrentYearAndMonth(Context context){
         this.context = context;
         Calendar currentDate = Calendar.getInstance();
         this.year  = currentDate.get(Calendar.YEAR);
@@ -30,7 +30,6 @@ public class CurrentYearAndMonth {
     public String getMonthText() {
         Resources resources = this.context.getResources();
         String[] months     = resources.getStringArray(R.array.month_abbreviation);
-        String monthText    = months[this.month];
-        return monthText;
+        return months[this.month];
     }
 }

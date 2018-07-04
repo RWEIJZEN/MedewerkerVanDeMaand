@@ -1,32 +1,18 @@
 package nl.weijzen.maastricht.medewerkervandemaand;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class Controller3SharePicture extends AppCompatActivity {
-    private Menu menu;
-    private ShareActionProvider shareActionProvider = null;
     private Picture picture;
 
     @Override
@@ -41,9 +27,8 @@ public class Controller3SharePicture extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        setMenuName(R.string.menu_title_view_3_share_picture);
+        setMenuName();
         getMenuInflater().inflate(R.menu.menu_view_3_share_picture, menu);
-        this.menu = menu;
         return true;
     }
 
@@ -57,8 +42,6 @@ public class Controller3SharePicture extends AppCompatActivity {
                 startActivityForResult(picIntent,1);
                 return true;
             case R.id.menuitem_share_eotm:
-                MenuItem menuItemShare = menu.findItem(R.id.menuitem_share_eotm);
-                shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItemShare);
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.setType("image/*");
@@ -79,25 +62,22 @@ public class Controller3SharePicture extends AppCompatActivity {
             Uri picUri = getPickImageResultUri(data);
             if (picUri != null) {
                 picture = new Picture(this, picUri);
-                showPictureInImageView(R.id.imageView3SharePicture);
+                showPictureInImageView();
             } else {
-                Resources resource = getResources();
-                Bitmap noInput = ((BitmapDrawable) getDrawable(R.drawable.ic_launcher_background)).getBitmap();
-                showPictureInImageView(R.id.imageView3SharePicture);
+                showPictureInImageView();
             }
         }
     }
 
     // onCreateOptionsMenu -------------------------------------------------------------------------
-    private void setMenuName(int recourceId){
-        setTitle(getResourceString(recourceId));
+    private void setMenuName(){
+        setTitle(getResourceString(R.string.menu_title_view_3_share_picture));
     }
 
     // setMenuName (onCreateOptionsMenu) -----------------------------------------------------------
     private String getResourceString(int RecourceId) {
         Resources resources = getResources();
-        String result = resources.getString(RecourceId);
-        return result;
+        return resources.getString(RecourceId);
     }
 
     // Controller3SharePicture ---------------------------------------------------------------------
@@ -121,18 +101,13 @@ public class Controller3SharePicture extends AppCompatActivity {
     }
 
     // onActivityResult ----------------------------------------------------------------------------
-    private void showPictureInImageView(int imageViewId) {
-        ImageView imageViewSelectPicture = findViewById(imageViewId);
+    private void showPictureInImageView() {
+        ImageView imageViewSelectPicture = findViewById(R.id.imageView3SharePicture);
         imageViewSelectPicture.setImageBitmap(picture.getBitmap());
     }
 
     // onActivityResult ----------------------------------------------------------------------------
     private Uri getPickImageResultUri(Intent data) {
-        boolean isCamera = true;
-        if (data != null) {
-            String action = data.getAction();
-            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-        }
-        return Uri.parse(data.getData().toString());
+        return Uri.parse(Objects.requireNonNull(data.getData()).toString());
     }
 }

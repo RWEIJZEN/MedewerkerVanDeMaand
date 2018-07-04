@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class CompoundPicture {
+@SuppressWarnings("UnusedAssignment")
+class CompoundPicture {
     private Context       context;
     private Picture       picture;
     private Bitmap        compoundPicture;
@@ -22,14 +23,9 @@ public class CompoundPicture {
     private int           canvasWidth;
     private int           canvasHeight;
     private Bitmap.Config canvasConfig;
-    private final float   textTopHeightInPercentageOfScreenHeight             = 3.3F;
-    private final float   textBottomHeightInPercentageOfScreenHeight          = 4.0F;
-    private final float   textTopPositionOnYaxisInPercentageOfScreenHeight    = 7.0F;
-    private final float   textBottomPositionOnYaxisInPercentageOfScreenHeight = 97.0F;
-    private final float   topTextPositionFormSidesInPercentageOfScreenWidth   = 17.1F;
 
     // Constructor
-    public CompoundPicture(Context context, Picture picture, int canvasWidth) throws InstantiationError {
+    CompoundPicture(Context context, Picture picture, int canvasWidth) throws InstantiationError {
         if (null != picture) {
             this.context       = context;
             this.picture       = picture;
@@ -54,10 +50,6 @@ public class CompoundPicture {
         return picture;
     }
 
-    public Bitmap getCompoundPicture() {
-        return compoundPicture;
-    }
-
     public Uri getCompoundPictureUri() {
         return compoundPictureUri;
     }
@@ -66,17 +58,9 @@ public class CompoundPicture {
         return gadgets;
     }
 
-    public Matrix getPictureMatrix() {
-        return pictureMatrix;
-    }
-
     // Setters
     public void setCompoundPictureUri(Uri compoundPictureUri) {
         this.compoundPictureUri = compoundPictureUri;
-    }
-
-    public void setCompoundPicture(Bitmap compoundPicture) {
-        this.compoundPicture = compoundPicture;
     }
 
     public void setPictureMatrix(Matrix pictureMatrix) {
@@ -191,8 +175,11 @@ public class CompoundPicture {
 
     // getCompoundPictureBitmap --------------------------------------------------------------------
     private Canvas drawTopLeftAndRightTextOnCanvas(Canvas canvas, String topRightText, String topLeftText) {
+        float textTopHeightInPercentageOfScreenHeight = 3.3F;
         int textTopHeight               = (int) (this.canvasHeight * textTopHeightInPercentageOfScreenHeight / 100);
+        float textTopPositionOnYaxisInPercentageOfScreenHeight = 7.0F;
         int textTopPositionOnYaxis      = (int) (this.canvasHeight * textTopPositionOnYaxisInPercentageOfScreenHeight / 100);
+        float topTextPositionFormSidesInPercentageOfScreenWidth = 17.1F;
         float topTextPositionFormSides  = topTextPositionFormSidesInPercentageOfScreenWidth / 100;
         int textTopLeftPositionOnXaxis  = (int) (canvas.getWidth() *      topTextPositionFormSides  / 2);
         int textTopRightPositionOnXaxis = (int) (canvas.getWidth() * (2 - topTextPositionFormSides) / 2);
@@ -207,13 +194,16 @@ public class CompoundPicture {
 
     // getCompoundPictureBitmap --------------------------------------------------------------------
     private Canvas drawBottomCenterText(Canvas canvas, String bottomCenterText) {
+        float textBottomHeightInPercentageOfScreenHeight = 4.0F;
         int textBottomHeight = (int) (this.canvasHeight * textBottomHeightInPercentageOfScreenHeight / 100);
         int textBottomPositionOnXaxis = canvas.getWidth() / 2;
+        float textBottomPositionOnYaxisInPercentageOfScreenHeight = 97.0F;
         int textBottomPositionOnYaxis = (int) (this.canvasHeight * textBottomPositionOnYaxisInPercentageOfScreenHeight / 100);
         Paint textToPaintBottom = new Paint();
         textToPaintBottom.setColor(this.context.getColor(R.color.colorBottomText));
         textToPaintBottom.setTextAlign(Paint.Align.CENTER);
         textToPaintBottom.setTextSize(textBottomHeight);
+        //noinspection SuspiciousNameCombination
         canvas.drawText(bottomCenterText,textBottomPositionOnXaxis, textBottomPositionOnYaxis, textToPaintBottom);
         return canvas;
     }

@@ -5,22 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
-public class CompoundGadget {
+class CompoundGadget {
     private static Long numberOfCompoundGadgetsCreated = 0L;
 
-    private Context context;
+    private final Context context;
     private Matrix matrix;
-    private int gadgetResourceId;
-    private Long gadgetId;
+    private final int gadgetResourceId;
     private int layer;
-    private String name;
-    private String msg ="message: ";
+    private final String name;
 
     // Constructors
-    public CompoundGadget(Context context, int gadgetResourceId, String name, Matrix matrix) {
+    CompoundGadget(Context context, int gadgetResourceId, String name, Matrix matrix) {
         ++numberOfCompoundGadgetsCreated;
         this.context = context;
-        this.gadgetId = numberOfCompoundGadgetsCreated;
         this.gadgetResourceId = gadgetResourceId;
         this.name = name;
         this.matrix = matrix;
@@ -31,13 +28,8 @@ public class CompoundGadget {
         return this.matrix;
     }
 
-    public int getGadgetResourceId() {
-        return this.gadgetResourceId;
-    }
-
     public Bitmap getGadgetBitmap() {
-        Bitmap bitmap = BitmapFactory.decodeResource(this.context.getResources(), this.gadgetResourceId);
-        return bitmap;
+        return BitmapFactory.decodeResource(this.context.getResources(), this.gadgetResourceId);
     }
 
     public Integer getLayer() {
@@ -51,10 +43,6 @@ public class CompoundGadget {
     // Setters
     public void setMatrix(Matrix matrix) {
         this.matrix = matrix;
-    }
-
-    public void setGadgetResourceId(int gadgetResourceId) {
-        this.gadgetResourceId = gadgetResourceId;
     }
 
     public void setLayer(Integer layer) {
