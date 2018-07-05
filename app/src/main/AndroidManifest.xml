@@ -36,14 +36,18 @@
                     android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Controller2EditPicture"
-            android:parentActivityName=".Controller1SelectPicture"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Controller1SelectPicture">
+        </activity>
+
         <activity
             android:name=".Controller3SharePicture"
-            android:parentActivityName=".Controller2EditPicture"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Controller2EditPicture">
+        </activity>
 
     </application>
 

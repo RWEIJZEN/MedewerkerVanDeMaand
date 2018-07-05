@@ -77,7 +77,8 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         editTextFilename      = findViewById(R.id.editTextFileName);
 
         CurrentYearAndMonth currentYearAndMonth = new CurrentYearAndMonth(this);
-        @SuppressLint("DefaultLocale") String filename = getString(R.string.filename_default) + "_" + currentYearAndMonth.getYear() + "_" + String.format("%02d",currentYearAndMonth.getMonth());
+        @SuppressLint("DefaultLocale")
+        String filename = getString(R.string.filename_default) + "_" + currentYearAndMonth.getYear() + "_" + String.format("%02d",currentYearAndMonth.getMonth());
         editTextFilename.setText(filename);
 
         Point displayDimensions = getDisplayDimensions();

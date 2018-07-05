@@ -35,6 +35,11 @@ public class Controller3SharePicture extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
+            case android.R.id.home:
+                Intent startController2EditPicture = new Intent(getApplicationContext(), Controller2EditPicture.class);
+                startController2EditPicture.putExtra("PICTURE_URI_TEXT", picture.getPictureUri().toString());
+                startActivity(startController2EditPicture);
+                return true;
             case R.id.menuitem_select_eotm:
                 Intent picIntent = new Intent(Intent.ACTION_GET_CONTENT,null);
                 picIntent.setType("image/*");
