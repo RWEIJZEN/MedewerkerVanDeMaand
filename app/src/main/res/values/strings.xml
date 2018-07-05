@@ -15,14 +15,20 @@
     <string name="content_description_imagebutton_gadget_next">Selecteer volgend gadget</string>
     <string name="content_description_imagebutton_gadget_previous">Selecteer vorig gadget</string>
     <string name="content_description_imagebutton_hide_menu">Verberg gadget-menu</string>
+    <string name="content_description_imagebutton_message_cancel">Anulleren</string>
+    <string name="content_description_imagebutton_message_send">Bericht versturen</string>
     <string name="content_description_imageview_1_main_select_picture">ImageView Kies foto</string>
     <string name="content_description_imageview_2_edit_picture">ImageView Gagdet plaatsing</string>
     <string name="content_description_imageview_3_share_picture">ImageView Bekijk voorbeeld </string>
     <string name="content_description_imageView_moving_gadget">moving gadget</string>
 
+    <string name="edittext_subject">Onderwerp</string>
+
     <string name="filename_cache">picture.jpg</string>
     <string name="filename_default">Medewerker_van_de_Maand</string>
     <string name="frame_bottom_center_text">Medewerker v/d maand</string>
+
+    <string name="intent_share_title">Deel Medewerker van de maand</string>
 
     <string name="menu_camera_button_name">Camera</string>
     <string name="menu_edit_button_name">Bewerken</string>
@@ -37,6 +43,7 @@
     <string name="menu_title_view_3_share_picture">MvdM deel</string>
 
     <string name="hint_filename">bestandnaam</string>
+    <string name="hint_body">Bericht inhoud</string>
 
     <string name="label_action">Aktie</string>
     <string name="label_gadget">Gadget</string>
@@ -45,10 +52,11 @@
     <string name="label_layer">Laag</string>
     <string name="label_menu">Menu</string>
     <string name="label_select">Selecteer</string>
+    <string name="label_body">Bericht</string>
+    <string name="label_subject">Onderwerp</string>
 
     <string name="share_body">Hierbij de Medewerker van de maand.</string>
     <string name="share_subject">Medewerker Van De Maand</string>
-
     <string name="toast_gadget_deleted">Gadget verwijderd</string>
     <string name="toast_gadget_failed_to_move">Gadget kon niet verplaatst worden</string>
     <string name="toast_gadget_last">Dit is het laatste gadget</string>

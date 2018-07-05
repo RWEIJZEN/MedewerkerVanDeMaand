@@ -44,6 +44,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
     private ConstraintLayout layoutMenuGadgetSelection;
     private ConstraintLayout layoutMenuSaveDialog;
     private MenuItem menuItemShare;
+    private MenuItem menuItemSubmit;
     // these matrices will be used to move and zoom image
     private Matrix matrix = new Matrix();
     private final Matrix savedMatrix = new Matrix();
@@ -215,6 +216,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
         setMenuName();
         getMenuInflater().inflate(R.menu.menu_view_2_edit_picture, menu);
         menuItemShare = menu.findItem(R.id.menuitem_share_compound_picture);
+        menuItemSubmit = menu.findItem(R.id.menu_item_submit_change);
         return true;
     }
 
@@ -229,6 +231,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
             case R.id.menuitem_save_compound_picture:
                 layoutMenuGadgetSelection.setVisibility(View.GONE);
                 layoutMenuSaveDialog.setVisibility(View.VISIBLE);
+                menuItemSubmit.setVisible(false);
                 return true;
             case R.id.menuitem_share_compound_picture:
                 startController3SharePicture();
@@ -236,6 +239,7 @@ public class Controller2EditPicture extends AppCompatActivity  implements View.O
             case R.id.menuitem_setup_gadgets:
                 // checkedout OK
                 layoutMenuGadgetSelection.setVisibility(View.VISIBLE);
+                menuItemSubmit.setVisible(true);
                 layoutMenuSaveDialog.setVisibility(View.GONE);
                 return true;
             case R.id.menu_item_submit_change:

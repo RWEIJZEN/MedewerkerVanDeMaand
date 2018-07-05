@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/background_light"
+    android:backgroundTint="@android:color/background_light"
     android:backgroundTintMode="src_atop"
     android:drawingCacheQuality="high"
+    android:focusableInTouchMode="true"
     android:foregroundTintMode="screen"
-    android:focusableInTouchMode="true">
+    tools:ignore="Overdraw">
 
     <ImageButton
         android:id="@+id/imageButtonSaveCompoundPicture"
